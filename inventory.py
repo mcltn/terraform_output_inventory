@@ -17,7 +17,7 @@ except IndexError:
 
 json_inv = {}
 for jsonstr in splitfile(sys.stdin, format="json"):
-    json_inv = json.loads(jsonstr)
+    json_inv = json.loads(jsonstr.decode('utf-8'))
 
 with open(output_filename, "w") as f:
     # Create [allservers]
