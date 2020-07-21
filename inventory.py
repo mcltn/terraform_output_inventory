@@ -9,27 +9,36 @@ else:
     message = 'Expecting json to be piped in.'
     raise IndexError(message)
 
+has_output_file = True
 try:
     output_filename = sys.argv[1]
 except IndexError:
-    message = 'Need a filename to save output to.'
-    raise IndexError(message)
+    has_output_file = False
+    #message = 'Need a filename to save output to.'
+    #raise IndexError(message)
 
 json_inv = {}
 for jsonstr in splitfile(sys.stdin, format="json"):
     json_inv = json.loads(jsonstr.decode('utf-8'))
 
-with open(output_filename, "w") as f:
-    # Create [allservers]
-    f.write("[allservers]\n")
-    for k in json_inv.keys():
-        for v in json_inv[k]["value"]:
-            f.write(v + "\n")
-    f.write("\n")
+inventory_str = ""
 
-    # Create sections for each Key
-    for k in json_inv.keys():
-        f.write("[" + k + "]\n")
-        for v in json_inv[k]["value"]:
-            f.write(v + "\n")
-        f.write("\n")
+# Create [allservers]
+inventory_str += "[allservers]\n"
+for k in json_inv.keys():
+    for v in json_inv[k]["value"]:
+        inventory_str += v + "\n"
+inventory_str += "\n"
+
+# Create sections for each Key
+for k in json_inv.keys():
+    inventory_str += "[" + k + "]\n"
+    for v in json_inv[k]["value"]:
+        inventory_str += v + "\n"
+    inventory_str += "\n"
+
+if has_output_file:
+    with open(output_filename, "w") as f:
+        f.write(inventory_str)
+else:
+    print(inventory_str)
