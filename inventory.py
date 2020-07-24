@@ -26,15 +26,21 @@ inventory_str = ""
 # Create [allservers]
 inventory_str += "[allservers]\n"
 for k in json_inv.keys():
-    for v in json_inv[k]["value"]:
-        inventory_str += v + "\n"
+    if isinstance(json_inv[k]["value"], list):
+        for v in json_inv[k]["value"]:
+            inventory_str += v + "\n"
+    else:
+        inventory_str += json_inv[k]["value"] + "\n"
 inventory_str += "\n"
 
 # Create sections for each Key
 for k in json_inv.keys():
     inventory_str += "[" + k + "]\n"
-    for v in json_inv[k]["value"]:
-        inventory_str += v + "\n"
+    if isinstance(json_inv[k]["value"], list):
+        for v in json_inv[k]["value"]:
+            inventory_str += v + "\n"
+    else:
+        inventory_str += json_inv[k]["value"] + "\n"
     inventory_str += "\n"
 
 if has_output_file:
